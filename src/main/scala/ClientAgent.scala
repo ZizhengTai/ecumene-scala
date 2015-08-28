@@ -7,6 +7,8 @@ import org.zeromq._
 final object ClientAgent {
 
   val PROTOCOL_VERSION: Short = 0
+  val versionBytes =
+    ByteBuffer.allocate(2).putShort(PROTOCOL_VERSION).array
 
   private val context = new ZContext
   private val socks = Map.empty[String, (ZMQ.Socket, Int)]
@@ -14,7 +16,7 @@ final object ClientAgent {
   private val calls = Map.empty[Long, FunctionCall]
     
   private val actorPipe: ZMQ.Socket = {
-    val attached: ZThread.IAttachedRunnable = new ZThread.IAttachedRunnable {
+    val attached = new ZThread.IAttachedRunnable {
       def run(args: Array[Object], ctx: ZContext, pipe: ZMQ.Socket) = {
 
         Runtime.getRuntime addShutdownHook new Thread {
@@ -25,7 +27,6 @@ final object ClientAgent {
         ecm connect "tcp://ecumene.io:23332"
 
         val poller = new ZMQ.Poller(2)
-
         val pipeIdx = poller register (pipe, ZMQ.Poller.POLLIN)
         val ecmIdx = poller register (ecm, ZMQ.Poller.POLLIN)
 
@@ -59,11 +60,6 @@ final object ClientAgent {
                     case None =>
                       // Ask Ecumene for new worker
 
-                      val versionBytes =
-                        ByteBuffer
-                          .allocate(2)
-                          .putShort(ClientAgent.PROTOCOL_VERSION)
-                          .array
                       require(ecm send (versionBytes, ZMQ.SNDMORE))
                       require(ecm send (id, ZMQ.SNDMORE))
                       require(ecm send call.ecmKey)

@@ -11,10 +11,11 @@ final class WorkerAgent(
   val publicEndpoint: String,
   val callback: (MessageUnpacker, MessagePacker) => Unit
 ) {
+
   private val context = new ZContext
 
   private val actorPipe: ZMQ.Socket = {
-    val attached: ZThread.IAttachedRunnable = new ZThread.IAttachedRunnable {
+    val attached = new ZThread.IAttachedRunnable {
       def run(args: Array[Object], ctx: ZContext, pipe: ZMQ.Socket) = {
 
         Runtime.getRuntime addShutdownHook new Thread {
@@ -25,9 +26,10 @@ final class WorkerAgent(
         worker bind localEndpoint
 
         val poller = new ZMQ.Poller(2)
-
         val pipeIdx = poller register (pipe, ZMQ.Poller.POLLIN)
         val workerIdx = poller register (worker, ZMQ.Poller.POLLIN)
+
+        HeartbeatService registerWorker (ecmKey, publicEndpoint)
 
         var terminated = false
         while (!terminated) {
@@ -68,6 +70,8 @@ final class WorkerAgent(
           }
         }
 
+        HeartbeatService unregisterWorker (ecmKey, publicEndpoint)
+
         println("Cleaning up worker agent...")
       }
     }
@@ -79,8 +83,4 @@ final class WorkerAgent(
       actorPipe send "$TERM"
     }
   }
-}
-
-final object WorkerAgent {
-  val PROTOCOL_VERSION: Short = 0
 }
