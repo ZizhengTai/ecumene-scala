@@ -2,13 +2,13 @@ package io.ecumene.client
 
 import org.zeromq._
 
-case class FunctionCall(
+final case class FunctionCall(
   ecmKey: String,
   args: ZMsg,
   callback: FunctionCallResult => Unit,
   timeoutAt: Long)
 
-object FunctionCall {
+final object FunctionCall {
   def apply(
     ecmKey: String,
     buffer: Array[Byte],

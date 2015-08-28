@@ -1,16 +1,24 @@
-package io.ecumene.client
+package io.ecumene.worker
 
 import scala.util.{ Try, Success, Failure }
 
+import io.ecumene.core.Implicits._
+
 object ClientTest {
 
-  import io.ecumene.client.EcumeneFunction.Implicits._
-
+  /*
   val greet = new EcumeneFunction1[String, String]("public/greet")
   val dup = new EcumeneFunction2[String, Int, Seq[String]]("public/dup")
   val sayHi = new EcumeneFunction0[String]("public/sayHi")
+  */
+
+  val greet = new EcumeneFunctionImpl1[String, String]({ name =>
+    name + ", welcome to Ecumene!"
+  }, "public/greet", "tcp://*:5555", "tcp://127.0.0.1:5555")
+
 
   def main(args: Array[String]): Unit = {
+    /*
     Try(greet("タイさん")) match {
       case Success(s) => println(s)
       case Failure(e) => println(s"ERROR: $e")
@@ -24,9 +32,9 @@ object ClientTest {
     Try(sayHi()) match {
       case Success(s) => println(s)
       case Failure(e) => println(s"ERROR: $e")
-    }
+    }*/
 
-    while (!Thread.currentThread.isInterrupted) {
+    while (true) {
       Thread.sleep(500)
     }
   }

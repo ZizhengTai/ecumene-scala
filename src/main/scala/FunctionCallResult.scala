@@ -2,7 +2,11 @@ package io.ecumene.client
 
 import org.zeromq.ZFrame
 
-object FunctionCallResult {
+final case class FunctionCallResult(
+  status: FunctionCallResult.Status.Value,
+  data: Array[Byte])
+
+final object FunctionCallResult {
 
   object Status extends Enumeration {
     type Status = Value
@@ -21,7 +25,3 @@ object FunctionCallResult {
       result.getData)
   }
 }
-
-case class FunctionCallResult(
-  status: FunctionCallResult.Status.Value,
-  data: Array[Byte])

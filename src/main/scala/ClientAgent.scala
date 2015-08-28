@@ -2,10 +2,9 @@ package io.ecumene.client
 
 import scala.collection.mutable.Map
 import java.nio.ByteBuffer
-
 import org.zeromq._
 
-object ClientAgent {
+final object ClientAgent {
 
   val PROTOCOL_VERSION: Short = 0
 
@@ -16,7 +15,7 @@ object ClientAgent {
     
   private val actorPipe: ZMQ.Socket = {
     val attached: ZThread.IAttachedRunnable = new ZThread.IAttachedRunnable {
-      def run(args: Array[Object], ctx: ZContext, pipe: ZMQ.Socket): Unit = {
+      def run(args: Array[Object], ctx: ZContext, pipe: ZMQ.Socket) = {
 
         Runtime.getRuntime addShutdownHook new Thread {
           override def run() = term()
@@ -25,7 +24,7 @@ object ClientAgent {
         val ecm = context createSocket ZMQ.DEALER
         ecm connect "tcp://ecumene.io:23332"
 
-        val poller = new ZMQ.Poller(1024)
+        val poller = new ZMQ.Poller(2)
 
         val pipeIdx = poller register (pipe, ZMQ.Poller.POLLIN)
         val ecmIdx = poller register (ecm, ZMQ.Poller.POLLIN)

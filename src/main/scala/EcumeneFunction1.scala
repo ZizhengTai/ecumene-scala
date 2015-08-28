@@ -5,7 +5,9 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.msgpack.core.MessagePack
 
-class EcumeneFunction1[-T1: CanPack, R: CanUnpack](
+import io.ecumene.core._
+
+final class EcumeneFunction1[-T1: CanPack, R: CanUnpack](
   val ecmKey: String,
   var timeout: Long = 15000
 ) extends EcumeneFunction[R] with Function1[T1, R] {
@@ -15,8 +17,6 @@ class EcumeneFunction1[-T1: CanPack, R: CanUnpack](
   }
 
   def future(v1: T1): Future[R] = {
-    import EcumeneFunction._
-
     futureWithPacker { packer =>
       implicit val pk = packer
 
