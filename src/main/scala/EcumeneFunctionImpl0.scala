@@ -5,8 +5,8 @@ import org.msgpack.core.{ MessagePacker, MessageUnpacker }
 import io.ecumene.core._
 import io.ecumene.core.Implicits._
 
-final class EcumeneFunctionImpl1[-T1: CanUnpack, +R: CanPack](
-  val func: (T1) => R,
+final class EcumeneFunctionImpl0[+R: CanPack](
+  val func: () => R,
   ecmKey: String,
   localEndpoint: String,
   publicEndpoint: String
@@ -15,15 +15,14 @@ final class EcumeneFunctionImpl1[-T1: CanUnpack, +R: CanPack](
   localEndpoint,
   publicEndpoint,
   { (unpacker, packer) =>
-    implicit val unpk = unpacker
-    if (unpacker.unpackArrayHeader != 1) {
+    if (unpacker.unpackArrayHeader != 0) {
       throw new IllegalArgumentException
     }
-    val r = func(unpack[T1].get)
+    val r = func()
 
     implicit val pk = packer
     pack(r)
   }
-) with Function1[T1, R] {
-  def apply(v1: T1): R = func(v1)
+) with Function0[R] {
+  def apply(): R = func()
 }

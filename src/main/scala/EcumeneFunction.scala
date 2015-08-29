@@ -1,12 +1,12 @@
 package io.ecumene.client
 
 import scala.concurrent.{ Future, Promise }
+import java.net.SocketTimeoutException
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
 import scala.util.{ Try, Success, Failure }
 import org.msgpack.core.{ MessagePack, MessagePacker, MessageUnpacker }
 
 import io.ecumene.core._
-import io.ecumene.core.Implicits._
 
 abstract class EcumeneFunction[R: CanUnpack] {
   val ecmKey: String
@@ -30,7 +30,7 @@ abstract class EcumeneFunction[R: CanUnpack] {
       case Status.InvalidArgument =>
         p failure (new IllegalArgumentException(s"illegal argument to $ecmKey"))
       case Status.NetworkError =>
-        p failure (new RuntimeException(s"failed to call $ecmKey due to network error"))
+        p failure (new SocketTimeoutException(s"failed to call $ecmKey due to network error"))
       case Status.UnknownError =>
         p failure (new RuntimeException(s"unknown error when calling $ecmKey"))
     }
