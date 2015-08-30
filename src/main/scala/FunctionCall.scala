@@ -11,11 +11,11 @@ final case class FunctionCall(
 final object FunctionCall {
   def apply(
     ecmKey: String,
-    buffer: Array[Byte],
+    args: Array[Byte],
     callback: FunctionCallResult => Unit,
     timeout: Long): FunctionCall = {
     val msg = new ZMsg
-    msg.add(buffer)
+    msg.add(args)
 
     return FunctionCall(
       ecmKey,

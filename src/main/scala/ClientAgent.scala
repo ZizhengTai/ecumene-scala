@@ -82,18 +82,19 @@ final object ClientAgent {
               case "" =>
                 // Success
 
-                val worker = ctx createSocket ZMQ.DEALER
-                worker connect endpoint
+                if (!socks.contains(ecmKey)) {
+                  val worker = ctx createSocket ZMQ.DEALER
+                  worker connect endpoint
 
-                val idx = poller register (worker, ZMQ.Poller.POLLIN)
+                  val idx = poller register (worker, ZMQ.Poller.POLLIN)
 
-                socks(ecmKey) = (worker, idx)
+                  socks(ecmKey) = (worker, idx)
 
-                actorPipe.synchronized {
-                  actorPipe sendMore "$SEND"
-                  actorPipe send id
+                  actorPipe.synchronized {
+                    actorPipe sendMore "$SEND"
+                    actorPipe send id
+                  }
                 }
-
               case "U" =>
                 // Undefined reference
 
