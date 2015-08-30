@@ -139,6 +139,7 @@ final object ClientAgent {
           }
         }
 
+        ecm.close()
         println("Cleaning up client agent...")
       }
     }
