@@ -28,6 +28,8 @@ object MyClient {
     }
     
     // Asynchronous call
+    import scala.concurrent.ExecutionContext.Implicits.global
+    
     val f = greet.future("Zizheng")
     f onSuccess { case s => println(s) }
     f onFailure { case e => println(s"ERROR: $e") }
@@ -42,7 +44,12 @@ import io.ecumene.core.Implicits._
 
 object MyWorker {
 
-  val greet = new EcumeneFunctionImpl[String, String]("myapp.greet")
+  val greet = new EcumeneFunctionImpl1[String, String](
+    { name => name + ", welcome to Ecumene!" },
+    "myapp.greet",
+    "tcp://*:5555",
+    "tcp://127.0.0.1:5555"
+  )
   
   def main(args: Array[String]): Unit = {
     while (true) { Thread.sleep(500) }
@@ -50,7 +57,7 @@ object MyWorker {
 }
 ```
 
-Then start `MyClient` and `MyWorker` in any order.
+Then start `MyWorker` followed by `MyClient`.
 
 # License
 ecumene-scala is licensed under the GNU Lesser General Public License v3.0. See the [`LICENSE`](./LICENSE) file for details.
