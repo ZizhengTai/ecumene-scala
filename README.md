@@ -33,6 +33,8 @@ object MyClient {
     val f = greet.future("Zizheng")
     f onSuccess { case s => println(s) }
     f onFailure { case e => println(s"ERROR: $e") }
+    
+    while (true) { Thread.sleep(500) }
   }
 }
 ```
