@@ -44,12 +44,9 @@ import io.ecumene.core.Implicits._
 
 object MyWorker {
 
-  val greet = new EcumeneFunctionImpl1[String, String](
-    { name => name + ", welcome to Ecumene!" },
-    "myapp.greet",
-    "tcp://*:5555",
-    "tcp://127.0.0.1:5555"
-  )
+  val greet = new EcumeneFunctionImpl1[String, String]({ name =>
+    name + ", welcome to Ecumene!"
+  }, "myapp.greet", "tcp://*:5555", "tcp://127.0.0.1:5555")
   
   def main(args: Array[String]): Unit = {
     while (true) { Thread.sleep(500) }
