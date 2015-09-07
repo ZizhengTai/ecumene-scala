@@ -3,7 +3,9 @@ package io.ecumene.worker
 import scala.util.{ Try, Success, Failure }
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
 import org.zeromq._
-import org.msgpack.core.{ MessagePack, MessagePacker, MessageUnpacker }
+import org.msgpack.core.{ MessagePack, MessagePacker, MessageUnpacker, MessageTypeException }
+
+import io.ecumene.core._
 
 final class WorkerAgent(
   val ecmKey: String,
@@ -61,11 +63,20 @@ final class WorkerAgent(
                 require(id send (worker, ZFrame.MORE))
                 require(worker send ("", ZMQ.SNDMORE))
                 require(worker send out.toByteArray)
-              case Failure(_) =>
-                require(identity send (worker, ZFrame.MORE))
-                require(id send (worker, ZFrame.MORE))
-                require(worker send ("I", ZMQ.SNDMORE))
-                require(worker send "")
+              case Failure(e) =>
+                def respond(status: String): Unit = {
+                  require(identity send (worker, ZFrame.MORE))
+                  require(id send (worker, ZFrame.MORE))
+                  require(worker send (status, ZMQ.SNDMORE))
+                  require(worker send "")
+                }
+                respond(e match {
+                  case _: MessageTypeException => "I"
+                  case UndefinedReference(_) => "U"
+                  case _: IllegalArgumentException => "I"
+                  case NetworkError(_) => "N"
+                  case UnknownError(_) => "?"
+                })
             }
           }
         }

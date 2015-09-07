@@ -26,13 +26,13 @@ abstract class EcumeneFunction[R: CanUnpack] {
         }
         unpacker.close()
       case Status.UndefinedReference =>
-        p failure (new RuntimeException(s"undefined reference to $ecmKey"))
+        p failure (new UndefinedReference(s"undefined reference to $ecmKey"))
       case Status.InvalidArgument =>
         p failure (new IllegalArgumentException(s"illegal argument to $ecmKey"))
       case Status.NetworkError =>
-        p failure (new SocketTimeoutException(s"failed to call $ecmKey due to network error"))
+        p failure (new NetworkError(s"failed to call $ecmKey due to network error"))
       case Status.UnknownError =>
-        p failure (new RuntimeException(s"unknown error when calling $ecmKey"))
+        p failure (new UnknownError(s"unknown error when calling $ecmKey"))
     }
   }
 

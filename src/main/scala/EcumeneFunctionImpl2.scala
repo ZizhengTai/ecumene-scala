@@ -1,5 +1,6 @@
 package io.ecumene.worker
 
+import scala.util.{ Try, Success, Failure }
 import org.msgpack.core.{ MessagePacker, MessageUnpacker }
 
 import io.ecumene.core._

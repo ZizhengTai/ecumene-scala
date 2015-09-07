@@ -1,6 +1,7 @@
 package io.ecumene
 
 import scala.util.Try
+import java.net.SocketTimeoutException
 import org.msgpack.core.{ MessagePacker, MessageUnpacker }
 
 package object core {
@@ -153,4 +154,8 @@ package object core {
   def unpack[T: CanUnpack](implicit mup: MessageUnpacker): Try[T] = {
     Try(implicitly[CanUnpack[T]].unpacker.unpack)
   }
+
+  case class UndefinedReference(val msg: String) extends RuntimeException(msg)
+  case class NetworkError(val msg: String) extends SocketTimeoutException(msg)
+  case class UnknownError(val msg: String) extends RuntimeException(msg)
 }
