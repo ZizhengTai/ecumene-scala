@@ -1,9 +1,9 @@
 package io.ecumene.client
 
 import scala.concurrent.{ Future, Promise }
+import scala.util.{ Try, Success, Failure }
 import java.net.SocketTimeoutException
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
-import scala.util.{ Try, Success, Failure }
 import org.msgpack.core.{ MessagePack, MessagePacker, MessageUnpacker }
 
 import io.ecumene.core._
@@ -36,7 +36,7 @@ abstract class EcumeneFunction[R: CanUnpack] {
     }
   }
 
-  def futureWithPacker(packArgs: MessagePacker => Unit): Future[R] = {
+  protected def futureWithPacker(packArgs: MessagePacker => Unit): Future[R] = {
     val out = new ByteArrayOutputStream
     implicit val packer = MessagePack.newDefaultPacker(out)
 
