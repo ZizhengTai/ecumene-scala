@@ -6,10 +6,10 @@ import io.ecumene.core._
 import io.ecumene.core.Implicits._
 
 final class EcumeneFunctionImpl2[-T1: CanUnpack, -T2: CanUnpack, +R: CanPack](
-  val func: (T1, T2) => R,
   ecmKey: String,
   localEndpoint: String,
-  publicEndpoint: String
+  publicEndpoint: String,
+  val func: (T1, T2) => R
 ) extends EcumeneFunctionImpl(
   ecmKey,
   localEndpoint,

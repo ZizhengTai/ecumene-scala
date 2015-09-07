@@ -4,7 +4,7 @@ This is the Scala client/worker library for the Ecumene RPC protocol.
 #Features
 * **Fast:** Ecumene is based on ZeroMQ and MessagePack, without the overhead of HTTP.
 * **Natural:** Ecumene is designed with the interoperability with native function calls in mind, and tries to abstract away the difference between local and remote function calls.
-* **Composable:** Ecumene supports the idea of "composable services," where network services can be composed the same way as [`higher-order functions`](https://www.wikiwand.com/en/Higher-order_function).
+* **Composable:** Ecumene supports the idea of "composable services," where network services can be composed the same way as [higher-order functions](https://www.wikiwand.com/en/Higher-order_function).
 
 # Building and Installation
 Simply run `sbt compile`.
@@ -51,9 +51,10 @@ import io.ecumene.core.Implicits._
 
 object MyWorker {
 
-  val greet = new EcumeneFunctionImpl1[String, String]({ name =>
-    name + ", welcome to Ecumene!"
-  }, "myapp.greet", "tcp://*:5555", "tcp://127.0.0.1:5555")
+  val greet = new EcumeneFunctionImpl1[String, String](
+    "myapp.greet", "tcp://*:5555", "tcp://127.0.0.1:5555",
+    { name => name + ", welcome to Ecumene!"}
+  )
   
   def main(args: Array[String]): Unit = {
     while (true) { Thread.sleep(500) }
