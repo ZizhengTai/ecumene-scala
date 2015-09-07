@@ -2,6 +2,7 @@ package io.ecumene.worker
 
 import scala.util.{ Try, Success, Failure }
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
+import java.net.SocketTimeoutException
 import org.zeromq._
 import org.msgpack.core.{ MessagePack, MessagePacker, MessageUnpacker, MessageTypeException }
 
@@ -72,10 +73,10 @@ final class WorkerAgent(
                 }
                 respond(e match {
                   case _: MessageTypeException => "I"
-                  case UndefinedReference(_) => "U"
+                  case UndefinedReferenceException(_) => "U"
                   case _: IllegalArgumentException => "I"
-                  case NetworkError(_) => "N"
-                  case UnknownError(_) => "?"
+                  case _: SocketTimeoutException => "N"
+                  case _: RuntimeException => "?"
                 })
             }
           }

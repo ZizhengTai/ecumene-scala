@@ -155,7 +155,5 @@ package object core {
     Try(implicitly[CanUnpack[T]].unpacker.unpack)
   }
 
-  case class UndefinedReference(val msg: String) extends RuntimeException(msg)
-  case class NetworkError(val msg: String) extends SocketTimeoutException(msg)
-  case class UnknownError(val msg: String) extends RuntimeException(msg)
+  case class UndefinedReferenceException(val msg: String) extends RuntimeException(msg)
 }
