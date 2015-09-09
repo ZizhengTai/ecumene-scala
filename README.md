@@ -65,4 +65,4 @@ object MyWorker {
 Then start `MyWorker` followed by `MyClient`.
 
 # License
-ecumene-scala is licensed under the GNU Lesser General Public License v3.0. See the [`LICENSE`](./LICENSE) file for details.
+ecumene-scala is licensed under the GNU Lesser General Public License v3.0. See the [LICENSE](./LICENSE) file for details.
