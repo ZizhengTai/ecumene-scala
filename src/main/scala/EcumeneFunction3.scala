@@ -17,9 +17,7 @@ final class EcumeneFunction3[-T1: CanPack, -T2: CanPack, -T3: CanPack, R: CanUnp
   }
 
   def future(v1: T1, v2: T2, v3: T3): Future[R] = {
-    futureWithPacker { packer =>
-      implicit val pk = packer
-
+    futureWithPacker { implicit packer =>
       packer packArrayHeader 3
       pack(v1)
       pack(v2)

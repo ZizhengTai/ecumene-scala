@@ -17,9 +17,7 @@ final class EcumeneFunction0[R: CanUnpack](
   }
 
   def future(): Future[R] = {
-    futureWithPacker { packer =>
-      implicit val pk = packer
-
+    futureWithPacker { implicit packer =>
       packer packArrayHeader 0
     }
   }
